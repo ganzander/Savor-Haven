@@ -19,7 +19,7 @@ export default function Admin() {
   function addFoodItems(event) {
     event.preventDefault();
     const { categoryName, name, imgurl, description, options } = foodDetails;
-
+    console.log(foodDetails);
     if (!categoryName || !name || !imgurl || !description || !options) {
       alert("Please fill in the form completely");
     } else {

@@ -45,7 +45,7 @@ export default function Login() {
             }
             localStorage.setItem("authToken", result.data.AuthToken);
           } else {
-            toast.error("Please Register First");
+            toast.error(result.data.msg);
           }
         });
 
