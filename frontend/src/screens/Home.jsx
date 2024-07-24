@@ -1,19 +1,16 @@
-import React, { Suspense, useState } from "react";
+import React, { Suspense, useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import Card from "../components/Card";
 import Footer from "../components/Footer";
 import axios from "axios";
 import Describe from "./Describe";
-import { gsap } from "gsap";
 
 export default function Home() {
   const [search, setSearch] = useState("");
-
   const [foodItem, setFoodItem] = useState([]);
-
   const [foodCategory, setFoodCategory] = useState([]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     axios.get("http://localhost:5000/foodItems").then((result) => {
       if (result.data.Success === "true") {
         setFoodItem(result.data.foodItem);
@@ -67,7 +64,7 @@ export default function Home() {
                       .map((filteredFood) => {
                         return (
                           <div
-                            className="col-12 col-md-6 col-lg-3"
+                            className="col-12 col-md-6 col-lg-3 mt-5 ps-4"
                             key={filteredFood._id}
                           >
                             <Card

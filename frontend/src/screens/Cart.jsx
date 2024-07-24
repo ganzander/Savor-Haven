@@ -1,30 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import Navbar from "../components/Navbar";
 import CartCard from "../components/CartCard";
 import axios from "axios";
-import { setCart } from "../store/slices/CartSlice";
 import toast from "react-hot-toast";
 import { loadStripe } from "@stripe/stripe-js";
 
 export default function Cart() {
-  const dispatch = useDispatch();
   const currentUserAuthToken = localStorage.getItem("authToken");
-  const data = useSelector((state) => state.cart);
+  const [cartData, setCartData] = useState([]);
 
-  function deleteCart() {
-    toast.success("Cart Emptied");
-    dispatch(setCart([]));
-    axios
-      .post("http://localhost:5000/cartItems", {
+  async function deleteCart() {
+    await axios
+      .post("http://localhost:5000/deleteItems", {
         data: [],
         currentUserAuthToken,
       })
       .then((result) => {
         if (result.data.Success === "true") {
-          console.log("Cart posted to backend");
+          toast.success(result.data.msg);
         } else {
-          console.log("error occured while placing order");
+          toast.error(result.data.msg);
         }
       });
   }
@@ -33,9 +28,10 @@ export default function Cart() {
     const stripe = await loadStripe(
       "pk_test_51O16qiSBdH4uYdkWOeS0zS4REySu3MmnRpO4gD7Uycx23DPPqQe04DwcZ3o5lTRDq5W6fiL6mINwoVjJI1xTKG5s00kiiGDAYq"
     );
-
     axios
-      .post("http://localhost:5000/api/create-checkout-session", { data })
+      .post("http://localhost:5000/api/create-checkout-session", {
+        data: cartData,
+      })
       .then((result) => {
         if (result.data.Success === "true") {
           const { sessionId } = result.data;
@@ -47,38 +43,28 @@ export default function Cart() {
         }
       });
   }
-  if (data.length !== 0) {
-    axios
-      .post("http://localhost:5000/cartItems", { data, currentUserAuthToken })
-      .then((result) => {
-        if (result.data.Success === "true") {
-          console.log("Cart posted to backend");
-        } else {
-          console.log("error occured while placing order");
-        }
-      });
-  }
-  React.useEffect(() => {
+
+  useEffect(() => {
     axios
       .post("http://localhost:5000/cartUser", { currentUserAuthToken })
       .then((result) => {
         if (result.data.Success === "true") {
-          dispatch(setCart(result.data.cartData));
+          setCartData(result.data.cartData);
         }
       });
-  }, []);
+  }, [cartData]);
 
-  if (data.length !== 0) {
+  if (cartData.length !== 0) {
     return (
       <div>
-        <Navbar length={data.length} />
+        <Navbar length={cartData.length} />
         <div className="container">
           <div className="cart-heading d-flex justify-content-center align-items-center m-3 mt-2">
             <h1>Cart</h1>
           </div>
           <div className="row mb-3">
-            {data.length !== 0 &&
-              data.map((foodItem) => {
+            {cartData.length !== 0 &&
+              cartData.map((foodItem) => {
                 return (
                   <div className="col-12 col-md-6 col-lg-3" key={foodItem._id}>
                     <CartCard

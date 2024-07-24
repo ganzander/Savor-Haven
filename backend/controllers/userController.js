@@ -26,7 +26,7 @@ async function generateAuthToken(newuser) {
     );
     return token;
   } catch (error) {
-    console.log(error);
+    throw error;
   }
 }
 
@@ -108,9 +108,7 @@ async function sendOTP(req, res) {
       };
       await transporter.sendMail(mailOptions, (err, info) => {
         if (err) {
-          console.log(err);
-        } else {
-          console.log("Email Sent");
+          throw err;
         }
       });
       res.send({
@@ -133,9 +131,7 @@ async function sendOTP(req, res) {
       };
       await transporter.sendMail(mailOptions, (err, info) => {
         if (err) {
-          console.log(err);
-        } else {
-          console.log("Email Sent");
+          throw err;
         }
       });
       res.send({

@@ -3,9 +3,9 @@ const uri = process.env.mongoURL;
 
 mongoose
   .connect(uri)
-  .then(console.log("mongoDB connected successful"))
+  .then(console.log("MongoDB connected successfull"))
   .catch((err) => {
-    console.log("some error in db connection");
+    console.log("Some error in DB connection");
     console.log(err);
   });
 

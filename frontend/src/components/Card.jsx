@@ -1,19 +1,30 @@
-import React, { useEffect, useRef, useState } from "react";
-import { useDispatch } from "react-redux";
-import { addToCart } from "../store/slices/CartSlice";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import axios from "axios";
+import "../assets/card.css";
 
 export default function Card(props) {
+  const currentUserAuthToken = localStorage.getItem("authToken");
+
   let options = props.options;
   let priceOptions = Object.keys(options[0]);
 
   const [qty, setQty] = useState(1);
   const [size, setSize] = useState(priceOptions[0]);
-  const dispatch = useDispatch();
 
-  function addNewCart(foodItem) {
-    toast.success("Item added to cart");
-    dispatch(addToCart(foodItem));
+  async function addNewCart(foodItem) {
+    await axios
+      .post("http://localhost:5000/cartItems", {
+        data: foodItem,
+        currentUserAuthToken,
+      })
+      .then((result) => {
+        if (result.data.Success === "true") {
+          toast.success(result.data.msg);
+        } else {
+          toast.error(result.data.msg);
+        }
+      });
   }
 
   let finalPrice;
@@ -37,19 +48,18 @@ export default function Card(props) {
   }, [qty, size]);
 
   return (
-    <article className="card mt-3 food" style={{ border: "5px solid #ecc00e" }}>
-      <div className="img-container">
-        <img src={props.foodItem.img} alt={props.foodItem.name} />
+    <div className="card d-flex justify-content-center px-4">
+      <div className="circle">
+        <img
+          src={props.foodItem.img}
+          alt={props.foodItem.name}
+          className="card-img-top"
+        />
       </div>
-      <div className="food-footer text-center p-2">
-        <h4>{props.foodItem.name}</h4>
-      </div>
-      <div className="food-footer text-center p-2">
-        <p>{props.foodItem.description}</p>
-      </div>
-      <div className="container w-100">
+      <div className="card-body">
+        <p className="card-title text-center">{props.foodItem.name}</p>
         <select
-          className="m-2 h-100 text-center rounded"
+          className="mx-2 h-100 text-center rounded ps-2"
           style={{ backgroundColor: "#ecc00e" }}
           value={qty}
           onChange={(e) => {
@@ -64,7 +74,7 @@ export default function Card(props) {
         </select>
 
         <select
-          className="m-2 h-100 text-center rounded"
+          className=" h-100 text-center rounded ps-2"
           style={{ backgroundColor: "#ecc00e" }}
           value={size}
           onChange={(e) => {
@@ -79,20 +89,9 @@ export default function Card(props) {
             );
           })}
         </select>
-
-        <div className="d-inline h-100 fs-5 mx-3">₹{finalPrice}/-</div>
-        <div
-          className="my-3 "
-          style={{
-            height: "1px",
-            borderRadius: "1.5px",
-            width: "100%",
-            backgroundColor: "#ecc00e",
-          }}
-        />
-
+        <p className="price">₹{finalPrice}/-</p>
         <button
-          className="btn justify-center btn-success m-2 mb-2"
+          className="btn btn-danger ps-4 text-center"
           onClick={() => {
             addNewCart(props.foodItem);
           }}
@@ -100,6 +99,6 @@ export default function Card(props) {
           Add To Cart
         </button>
       </div>
-    </article>
+    </div>
   );
 }

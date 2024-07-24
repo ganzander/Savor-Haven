@@ -1,19 +1,25 @@
+import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { removeFromCart } from "../store/slices/CartSlice";
 import toast from "react-hot-toast";
 
 export default function CartCard(props) {
-  let options = props.options;
-
+  const currentUserAuthToken = localStorage.getItem("authToken");
   const [qty, setQty] = useState(props.foodItem.qtyOrdered);
   const [size, setSize] = useState(props.foodItem.size);
-  const dispatch = useDispatch();
 
-  function deleteCartItem(item) {
-    console.log(item);
-    toast.success("Item deleted from cart");
-    dispatch(removeFromCart(item));
+  async function deleteCartItem(item) {
+    await axios
+      .post("http://localhost:5000/deleteCartItem", {
+        itemId: item._id,
+        currentUserAuthToken,
+      })
+      .then((result) => {
+        if (result.data.Success === "true") {
+          toast.success(result.data.msg);
+        } else {
+          toast.error(result.data.msg);
+        }
+      });
   }
 
   let finalPrice;
@@ -30,6 +36,35 @@ export default function CartCard(props) {
     finalPrice = props.options[0].medium * qty;
   }
 
+  return (
+    <div className="card d-flex justify-content-center px-4">
+      <div className="circle">
+        <img
+          src={props.foodItem.img}
+          alt={props.foodItem.name}
+          className="card-img-top"
+        />
+      </div>
+      <div className="card-body">
+        <p className="card-title text-center">{props.foodItem.name}</p>
+        <p className="text-center m-2" value={qty}>
+          Quantity: {qty}
+        </p>
+        <p className="text-center m-2" value={size}>
+          Size: {size}
+        </p>
+        <p className="fs-5 mt-2 text-center">₹{finalPrice}/-</p>
+        <button
+          className="btn btn-danger ps-4 text-center"
+          onClick={() => {
+            deleteCartItem(props.foodItem);
+          }}
+        >
+          Remove From Cart
+        </button>
+      </div>
+    </div>
+  );
   return (
     <article className="card mt-3 food" style={{ border: "5px solid #ecc00e" }}>
       <div className="img-container">

@@ -48,7 +48,6 @@ async function getFood(req, res) {
       foodItem: foodItems,
     });
   } else {
-    console.log("foodItems not found");
     res.json({ Success: "false" });
   }
 }

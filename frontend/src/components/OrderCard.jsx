@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
+import "../assets/card.css";
 
 export default function OrderCard(props) {
   const [qty, setQty] = useState(props.foodItem.qtyOrdered);
@@ -17,40 +18,26 @@ export default function OrderCard(props) {
   } else if ("medium" === size) {
     finalPrice = props.options[0].medium * qty;
   }
-
   return (
-    <article className="card mt-3 food" style={{ border: "5px solid #ecc00e" }}>
-      <div className="img-container">
-        <img src={props.foodItem.img} alt={props.foodItem.name} />
+    <div className="card d-flex justify-content-center px-4">
+      <div className="circle">
+        <img
+          src={props.foodItem.img}
+          alt={props.foodItem.name}
+          className="card-img-top"
+        />
       </div>
-      <div className="food-footer p-2 text-center">
-        <h4>{props.foodItem.name}</h4>
-      </div>
-      <div className="food-footer p-2 text-center">
-        <p>{props.foodItem.description}</p>
-      </div>
-      <div className="container w-100">
-        <p
-          className="text-center m-2 h-100 rounded"
-          style={{ backgroundColor: "#ecc00e" }}
-          value={qty}
-        >
+      <div className="card-body">
+        <p className="card-title text-center">{props.foodItem.name}</p>
+        <p className="text-center m-2" value={qty}>
           Quantity: {qty}
         </p>
 
-        <p
-          className="text-center m-2 h-100 rounded"
-          style={{ backgroundColor: "#ecc00e" }}
-          value={size}
-        >
+        <p className="text-center m-2" value={size}>
           Size: {size}
         </p>
-
-        <div className="d-inline h-100 fs-5 mt-2 text-center">
-          ₹{finalPrice}/-
-        </div>
-        <hr />
+        <div className="fs-5 mt-2 text-center">₹{finalPrice}/-</div>
       </div>
-    </article>
+    </div>
   );
 }

@@ -35,8 +35,8 @@ img {
 }
 
 .line {
-  height: 8px;
-  border-radius: 1.5px;
+  height: 4px;
+  border-radius: 15px;
   width: 100%;
   background-color: #ecc00e;
 }

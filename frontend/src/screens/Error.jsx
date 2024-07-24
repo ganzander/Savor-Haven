@@ -22,6 +22,7 @@ export default function Error() {
       direction: "alternate",
     });
   }, []);
+
   return (
     <div className="error-section">
       <a target="_blank" href="https://codepen.io/uiswarup/pen/XWGGyWQ" />

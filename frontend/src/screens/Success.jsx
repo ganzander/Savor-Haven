@@ -1,32 +1,27 @@
-import React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { setCart } from "../store/slices/CartSlice";
 
 export default function Success() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-
+  const [data, setData] = useState([]);
   const currentUserAuthToken = localStorage.getItem("authToken");
-  const data = useSelector((state) => state.cart);
-
-  let currentdate = new Date();
   let indianTime = new Date().toLocaleString("en-Us", {
     timeZone: "Asia/Kolkata",
   });
-  const dataWithTime = [...data, indianTime];
-  React.useEffect(() => {
+
+  useEffect(() => {
     axios
       .post("http://localhost:5000/cartUser", { currentUserAuthToken })
       .then((result) => {
         if (result.data.Success === "true") {
-          dispatch(setCart(result.data.cartData));
+          setData(result.data.cartData);
         }
       });
   }, []);
 
   if (data.length !== 0) {
+    const dataWithTime = [...data, indianTime];
     axios
       .post("http://localhost:5000/order-Items", {
         dataWithTime,
@@ -40,13 +35,12 @@ export default function Success() {
         }
       });
     axios
-      .post("http://localhost:5000/cartItems", {
+      .post("http://localhost:5000/deleteItems", {
         data: [],
         currentUserAuthToken,
       })
       .then((result) => {
         if (result.data.Success === "true") {
-          dispatch(setCart([]));
           console.log("Cart posted to backend");
         } else {
           console.log("error occured while placing order");
@@ -54,7 +48,7 @@ export default function Success() {
       });
   }
 
-  React.useEffect(() => {
+  useEffect(() => {
     setTimeout(() => {
       navigate("/");
     }, 5000);

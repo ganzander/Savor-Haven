@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "./../components/Navbar";
-import Footer from "./../components/Footer";
 import toast from "react-hot-toast";
 import axios from "axios";
 import "../assets/profile.css";
@@ -17,7 +16,6 @@ function Profile() {
   async function handleSubmit(event) {
     const { email } = user;
     event.preventDefault();
-
     if (!password || !newPassword || !confirmPassword) {
       toast.error("Please fill in the form completely");
     } else if (newPassword !== confirmPassword) {
@@ -35,21 +33,18 @@ function Profile() {
           newPassword,
         })
         .then((result) => {
-          console.log(result);
           if (result.data.Success === true) {
             toast.success("Successfully updated your password");
-            setPassword("");
-            setNewPassword("");
-            setConfirmPassword("");
           } else {
             toast.error("Please enter your correct password");
-            setPassword("");
-            setNewPassword("");
-            setConfirmPassword("");
           }
         });
+      setPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
     }
   }
+
   function convertToBase64(event) {
     var reader = new FileReader();
     reader.readAsDataURL(event.target.files[0]);
@@ -64,14 +59,12 @@ function Profile() {
   async function handlePicSubmit(event) {
     event.preventDefault();
     const { email } = user;
-
-    axios
+    await axios
       .post("http://localhost:5000/uploadImage", {
         email,
         pic,
       })
       .then((result) => {
-        console.log(result);
         if (result.data.Success === true) {
           toast.success("Successully Uploaded your Profile photo");
           setPic(result.data.picUrl);
@@ -83,11 +76,13 @@ function Profile() {
   }
 
   function ResetPassword() {
-    setChangePassword(!changePassword);
+    setInsertPic(false);
+    setChangePassword(true);
   }
 
   function InputPicture() {
-    setInsertPic(!insertPic);
+    setChangePassword(false);
+    setInsertPic(true);
   }
 
   return (

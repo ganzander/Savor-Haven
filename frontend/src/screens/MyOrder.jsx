@@ -20,8 +20,6 @@ export default function MyOrder() {
         }
       });
   }, []);
-
-  console.log(orders);
   if (orders.length > 0) {
     return (
       <>
@@ -38,7 +36,7 @@ export default function MyOrder() {
                 <div key={index} className="container">
                   <hr />
                   <h2>{order[order.length - 1]}</h2>
-                  <div className="row mb-3">
+                  <div className="row mb-3 pt-3">
                     {order.map((orderList) => {
                       if (orderList.length === undefined) {
                         return (

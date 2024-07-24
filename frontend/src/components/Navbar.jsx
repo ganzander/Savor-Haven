@@ -1,4 +1,4 @@
-import React, { Suspense, useState, useRef, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Badge from "react-bootstrap/Badge";
 import Pizza from "../models/Pizza";
@@ -35,6 +35,7 @@ function Navbar(props) {
   window.addEventListener("scroll", scrolling);
 
   var pageload = gsap.timeline();
+
   useEffect(() => {
     pageload.to(".custom-navbar", {
       y: 0,
@@ -57,12 +58,12 @@ function Navbar(props) {
       duration: 0.5,
     });
   }, []);
+
+  useEffect(() => {}, []);
+
   return (
     <nav
-      className={
-        "navbar custom-navbar navbar-expand-lg navbar-dark m-10 " +
-        (sticky ? "sticky" : "")
-      }
+      className={"navbar custom-navbar navbar-expand-lg navbar-dark m-10"}
       style={{ backgroundColor: "#ea5200" }}
     >
       <div className="container-fluid ">
