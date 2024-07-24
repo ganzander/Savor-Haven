@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import toast from "react-hot-toast";
+import "../assets/card.css";
 
 export default function CartCard(props) {
   const currentUserAuthToken = localStorage.getItem("authToken");

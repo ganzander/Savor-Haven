@@ -9,9 +9,6 @@ import { gsap } from "gsap";
 
 function Navbar(props) {
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
-  const [sticky, setSticky] = useState(false);
-
   const userProfile = JSON.parse(localStorage.getItem("currentUser"));
 
   function handleLogout() {
@@ -21,71 +18,23 @@ function Navbar(props) {
     localStorage.removeItem("CartItems");
     localStorage.removeItem("currentUser");
   }
-  function toggleDropdown() {
-    setIsOpen(!isOpen);
-  }
-
-  function scrolling() {
-    if (window.scrollY >= 350) {
-      setSticky(true);
-    } else {
-      setSticky(false);
-    }
-  }
-  window.addEventListener("scroll", scrolling);
-
-  var pageload = gsap.timeline();
-
-  useEffect(() => {
-    pageload.to(".custom-navbar", {
-      y: 0,
-      duration: 0.5,
-    });
-
-    pageload.to(".logo-model", {
-      x: 80,
-      duration: 0.3,
-      ease: "expo.out",
-      delay: -1.2,
-    });
-    pageload.to(".logo-name", {
-      x: 100,
-      duration: 0.4,
-      opacity: 1,
-    });
-    pageload.to(".logo-model", {
-      x: 100,
-      duration: 0.5,
-    });
-  }, []);
 
   useEffect(() => {}, []);
 
   return (
     <nav
-      className={"navbar custom-navbar navbar-expand-lg navbar-dark m-10"}
-      style={{ backgroundColor: "#ea5200" }}
+      className="navbar custom-navbar navbar-expand-lg navbar-dark ps-5 pe-5"
+      style={{ backgroundColor: "#ffe9df" }}
     >
       <div className="container-fluid ">
-        <div className="nav-left d-flex flex-row align-items-center">
-          <div className="logo-model ">
-            <Canvas>
-              <Stage environment="city" intensity={0.7}>
-                <Pizza />
-              </Stage>
-              <OrbitControls
-                enableZoom={false}
-                autoRotate={true}
-                autoRotateSpeed={3}
-              />
-            </Canvas>
-          </div>
-          <Link
-            className="navbar-brand fs-1 fst-italic font-weight-bold logo-name"
-            to="/"
+        <div className="nav-left d-flex justify-content-around flex-row align-items-center">
+          <div
+            className="fs-1 font-weight-bold logo-name"
+            style={{ cursor: "pointer" }}
+            onClick={() => navigate("/")}
           >
             Savor Haven
-          </Link>
+          </div>
         </div>
 
         <div className="nav-right collapse navbar-collapse" id="navbarNav">
@@ -105,70 +54,55 @@ function Navbar(props) {
               </ul>
             </div>
           ) : (
-            <div className="d-flex">
+            <div className="d-flex justify-content-around ">
               <div className="profile-section">
-                <Link className="btn bg-white text-danger mx-5" to="/cart">
+                <div
+                  className="px-4 fs-4 font-weight-bold"
+                  style={{ cursor: "pointer", color: "black" }}
+                  onClick={() => navigate("/cart")}
+                >
                   Cart
                   <Badge pill bg="danger">
                     {props.length}
                   </Badge>
-                </Link>
-
-                <div className="dropdown">
+                </div>
+                {localStorage.getItem("Admin") === "true" && (
                   <div
-                    className="dropdown-btn profile-info"
-                    onClick={toggleDropdown}
+                    className="px-4 fs-4 font-weight-bold"
+                    style={{ cursor: "pointer", color: "black" }}
+                    onClick={() => navigate("/admin")}
+                  >
+                    Admin
+                  </div>
+                )}
+                <div
+                  className="px-4 fs-4 font-weight-bold"
+                  style={{ cursor: "pointer", color: "black" }}
+                  onClick={() => navigate("/myorder")}
+                >
+                  Orders
+                </div>
+                <div className="dropdown px-4">
+                  <div
+                    className="dropdown-btn profile-info d-flex"
+                    onClick={() => navigate("/profile")}
+                    style={{ cursor: "pointer", color: "black" }}
                   >
                     <img src={userProfile.imgUrl} alt={userProfile.name} />
-                    <span>{userProfile.name}</span>
-                  </div>
-                  {isOpen && (
                     <div
-                      className="dropdown-content text-center"
-                      style={{
-                        boxShadow: "3px 3px 10px rgba(1, 1, 1.0, 0.5)",
-                      }}
+                      className="fs-4 font-weight-bold"
+                      style={{ color: "black" }}
                     >
-                      <div className="dropdown-items mb-2 mt-2">
-                        <Link
-                          to="/profile"
-                          style={{ color: "black", textDecoration: "none" }}
-                        >
-                          My Profile
-                        </Link>
-                      </div>
-
-                      {localStorage.getItem("Admin") === "true" && (
-                        <>
-                          <div className="dropdown-items mb-2 mt-2">
-                            <Link
-                              to="/admin"
-                              style={{ color: "black", textDecoration: "none" }}
-                            >
-                              Admin
-                            </Link>
-                          </div>
-                        </>
-                      )}
-                      <div className="dropdown-items mb-2 mt-2">
-                        <Link
-                          to="/myorder"
-                          style={{ color: "black", textDecoration: "none" }}
-                        >
-                          My Orders
-                        </Link>
-                      </div>
-                      <div className="dropdown-items mb-2 mt-2">
-                        <Link
-                          to="/login"
-                          style={{ color: "black", textDecoration: "none" }}
-                          onClick={handleLogout}
-                        >
-                          Logout
-                        </Link>
-                      </div>
+                      {userProfile.name}
                     </div>
-                  )}
+                  </div>
+                </div>
+                <div
+                  className="px-4 fs-4 font-weight-bold"
+                  style={{ cursor: "pointer", color: "black" }}
+                  onClick={handleLogout}
+                >
+                  Logout
                 </div>
               </div>
             </div>
