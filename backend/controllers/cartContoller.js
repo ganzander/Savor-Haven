@@ -55,7 +55,7 @@ async function getCartData(req, res) {
   if (FoundEmail) {
     res.send({ Success: "true", cartData: FoundEmail.cart });
   } else {
-    res.send({ Success: "false", cart: [] });
+    res.send({ Success: "false", cartData: [] });
   }
 }
 

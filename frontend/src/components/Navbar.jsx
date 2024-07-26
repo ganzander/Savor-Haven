@@ -1,25 +1,34 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Badge from "react-bootstrap/Badge";
-import Pizza from "../models/Pizza";
-import { OrbitControls, Stage } from "@react-three/drei";
-import { Canvas } from "@react-three/fiber";
+import axios from "axios";
 import "../assets/navbar.css";
-import { gsap } from "gsap";
 
 function Navbar(props) {
   const navigate = useNavigate();
   const userProfile = JSON.parse(localStorage.getItem("currentUser"));
-
+  const currentUserAuthToken = localStorage.getItem("authToken");
+  const [cartLength, setCartLength] = useState(0);
   function handleLogout() {
     localStorage.removeItem("authToken");
     localStorage.removeItem("OTP");
     localStorage.removeItem("Admin");
     localStorage.removeItem("CartItems");
     localStorage.removeItem("currentUser");
+    location.reload();
   }
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    if (currentUserAuthToken) {
+      axios
+        .post("http://localhost:5000/cartUser", {
+          currentUserAuthToken,
+        })
+        .then((result) => {
+          setCartLength(result.data.cartData.length);
+        });
+    }
+  }, []);
 
   return (
     <nav
@@ -40,17 +49,26 @@ function Navbar(props) {
         <div className="nav-right collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav me-auto mb-2"></ul>
           {!localStorage.getItem("authToken") ? (
-            <div className="d-flex">
+            <div className="d-flex justify-content-around ">
               <ul>
-                <Link className="btn bg-white text-success mx-1" to="/login">
+                <div
+                  style={{ cursor: "pointer", color: "black" }}
+                  className="btn bg-white px-4 fs-4 font-weight-bold mx-3"
+                  onClick={() => {
+                    navigate("/login");
+                  }}
+                >
                   Login
-                </Link>
-                <Link
-                  className="btn bg-white text-success mx-1"
-                  to="/createuser"
+                </div>
+                <div
+                  style={{ cursor: "pointer", color: "black" }}
+                  className="btn bg-white px-4 fs-4 font-weight-bold mx-3"
+                  onClick={() => {
+                    navigate("/createuser");
+                  }}
                 >
                   SignUp
-                </Link>
+                </div>
               </ul>
             </div>
           ) : (
@@ -61,9 +79,9 @@ function Navbar(props) {
                   style={{ cursor: "pointer", color: "black" }}
                   onClick={() => navigate("/cart")}
                 >
-                  Cart
+                  Cart{" "}
                   <Badge pill bg="danger">
-                    {props.length}
+                    {cartLength}
                   </Badge>
                 </div>
                 {localStorage.getItem("Admin") === "true" && (
@@ -88,7 +106,11 @@ function Navbar(props) {
                     onClick={() => navigate("/profile")}
                     style={{ cursor: "pointer", color: "black" }}
                   >
-                    <img src={userProfile.imgUrl} alt={userProfile.name} />
+                    <img
+                      src={userProfile.imgUrl}
+                      alt={userProfile.name}
+                      className="mx-2"
+                    />
                     <div
                       className="fs-4 font-weight-bold"
                       style={{ color: "black" }}
